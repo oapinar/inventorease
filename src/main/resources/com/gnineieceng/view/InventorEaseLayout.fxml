@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="573.0" prefWidth="422.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gnineieceng.controller.InventorEaseController">
+    <TextField fx:id="unitCostField" layoutX="124.0" layoutY="36.0" prefHeight="25.0" prefWidth="175.0" promptText="Unit Cost" />
+    <TextField fx:id="orderingCostField" layoutX="124.0" layoutY="69.0" prefHeight="25.0" prefWidth="175.0" promptText="Ordering Cost" />
+    <TextField fx:id="penaltyCostField" layoutX="124.0" layoutY="104.0" prefHeight="25.0" prefWidth="175.0" promptText="Penalty Cost" />
+    <TextArea fx:id="outputArea" editable="false" layoutX="45.0" layoutY="332.0" prefHeight="200.0" prefWidth="332.0" />
+   <Button layoutX="179.0" layoutY="287.0" mnemonicParsing="false" onAction="#onCalculateButtonClick" text="Calculate" />
+   <TextField fx:id="interestRateField" layoutX="124.0" layoutY="137.0" prefHeight="25.0" prefWidth="175.0" promptText="Interest Rate" />
+   <TextField fx:id="leadTimeField" layoutX="124.0" layoutY="172.0" prefHeight="25.0" prefWidth="175.0" promptText="Lead Time" />
+   <TextField fx:id="leadTimeDemandField" layoutX="124.0" layoutY="204.0" prefHeight="25.0" prefWidth="175.0" promptText="Lead Time Demand" />
+   <TextField fx:id="leadTimeStandardDeviationField" layoutX="124.0" layoutY="238.0" prefHeight="25.0" prefWidth="175.0" promptText="Lead Time Standard Deviation" />
+</AnchorPane>
