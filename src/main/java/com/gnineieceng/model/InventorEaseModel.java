@@ -1,21 +1,20 @@
 package com.gnineieceng.model;
 
+import com.gnineieceng.model.ZChartTableLookUp.ZEntry;
 
 public class InventorEaseModel {
 
     // INPUTS
     private double unitCost;
-    private double orderingCost;
-    private double penaltyCost;
+    private double orderingCost; //setup cost
+    private double penaltyCost; //stockout cost
     private double interestRate;
-    private double leadTime;
-    private double leadTimeDemand;
+    private double leadTime;    //IN MONTHS
+    private double leadTimeDemand; //Selling average
     private double leadTimeStandardDeviation;
 
     // TO CALCULATE
 
-    private double holdingCost = 0;
-    private double annualDemand = 1;
     private double optimalLotSize = 2;
     private double reorderPoint = 3;
     private int numberOfIterationsToFindOptimals = 4;
@@ -29,86 +28,137 @@ public class InventorEaseModel {
 
 
     public InventorEaseModel(double unitCost, double orderingCost, double penaltyCost, double interestRate, double leadTime, double leadTimeDemand, double leadTimeStandardDeviation) {
-        this.unitCost = unitCost;
+        this.unitCost = unitCost; 
         this.orderingCost = orderingCost;
         this.penaltyCost = penaltyCost;
-        this.interestRate = interestRate;
-        this.leadTime = leadTime;
+        this.interestRate = interestRate; 
+        this.leadTime = leadTime; 
         this.leadTimeDemand = leadTimeDemand;
         this.leadTimeStandardDeviation = leadTimeStandardDeviation;
+    }
+
+    public String calculate() {
+        // Input values
+        double c = unitCost;
+        double t = leadTime;
+        double interest = interestRate;
+        double p = penaltyCost;
+        double k = orderingCost;
+        double sellAvg = leadTimeDemand;
+        double demDev = leadTimeStandardDeviation;
+        
+        double[] Q = new double[2];
+        double[] FR = new double[2];
+        double[] R = new double[2];
+
+        // Calculations
+        double h = interest * c;
+        double annDem = sellAvg * (12 / t);
+        Q[0] = Math.sqrt(2 * k * annDem / h);
+        Q[1] = Q[0];
+        R[0] = 0;
+        R[1] = 1;
+
+        double n_R = 0, L_Z, Z;
+
+        ZChartTableLookUp lookup = new ZChartTableLookUp();
+        lookup.initializeZTable();
+
+        while (Math.abs(R[1] - R[0]) > 0.001)  {
+            //Move previous values
+            FR[0] = FR[1];
+            R[0] = R[1];
+            Q[0] = Q[1];
+
+            FR[1] = 1 - ((Q[1] * h) / (p * annDem));
+
+            ZEntry zEnt = lookup.findClosestZFromFZ(FR[1]);
+            Z = zEnt.z; 
+            R[1] = sellAvg + demDev * Z;
+            L_Z = zEnt.lZ; 
+            n_R = demDev * L_Z;
+            Q[1] = Math.sqrt(2 * annDem * ((k + p * n_R) / h));
+        } 
+    
+        // Final values
+        double safetyStock = R[1] - sellAvg;
+        double holdCost = h * (Q[1] / 2 + R[1] - sellAvg);
+        double orderCost = k * annDem / Q[1];
+        double penaltyCost = p * annDem * n_R / Q[1];
+        double avgTimeBetweenOrders = Q[1] / annDem;
+        double notMetDemands = n_R / Q[1];
+
+        // Output
+        return String.format("Optimal Values:"
+        +"\nSafety Stock: %s"
+        +"\nHolding Cost: %s"
+        +"\nOrdering Cost: %s"
+        +"\nPenalty Cost: %s"
+        +"\nAverage Time Between Orders: %s"
+        +"\nProportion of Demands Not Met: %s", safetyStock, holdCost, orderCost, penaltyCost, avgTimeBetweenOrders, notMetDemands);
     }
 
     //Method to calculate holding cost
 
     public void calculateHoldingCost() {
-        this.holdingCost = holdingCost;
     }
 
     //Method to calculate annual demand
 
     public void calculateAnnualDemand() {
-        this.annualDemand = annualDemand;
     }
 
     //Method to calculate optimal lot size
 
     public void calculateOptimalLotSize() {
-        this.optimalLotSize = optimalLotSize;
     }
 
     //Method to calculate reorderPoint
 
     public void calculateReorderPoint() {
-        this.reorderPoint = reorderPoint;
     }
 
     //Method to calculate Number Of Iterations To Find Optimals
 
     public void calculateNumberOfIterationsToFindOptimals() {
-        this.numberOfIterationsToFindOptimals = numberOfIterationsToFindOptimals;
     }
 
     //Method to calculate safety stock
     public void calculateSafetyStock() {
-        this.safetyStock = safetyStock;
     }
 
     //Method to calculate average annual holding cost
     public void calculateAverageAnnualHoldingCost() {
-        this.averageAnnualHoldingCost = averageAnnualHoldingCost;
     }
 
     //Method to calculate average setup cost
 
     public void calculateAverageSetupCost() {
-        this.averageSetupCost = averageSetupCost;
     }
 
     //Method to calculate average penalty cost
 
     public void calculateAveragePenaltyCost() {
-        this.averagePenaltyCost = averagePenaltyCost;
     }
 
     //Method to calculate average Time Between Order Placements
 
     public void calculateAverageTimeBetweenOrderPlacements() {
-        this.averageTimeBetweenOrderPlacements = averageTimeBetweenOrderPlacements;
     }
 
     //Method to calculate The proportion of order cycles without stockouts
 
     public void calculatePOOCWS() {
-        this.pOOCWS = pOOCWS;
     }
 
     //Method to calculate The proportion of unmet demands
 
     public void calculatePOUD() {
-        this.pOUD = pOUD;
     }
 
     public String outcomesToString() {
-        return "Optimal Lot Size: " + optimalLotSize + "\nReorder Point: " + reorderPoint + "\nNumber of Iterations Needed to Find the Optimal Values: " + numberOfIterationsToFindOptimals + "\nSafety Stock: " + safetyStock + "\nAverage Annual Holding Cost: " + averageAnnualHoldingCost + "\nAverage Setup Cost: " + averageSetupCost + "\nAverage Penalty Cost: " + averagePenaltyCost + "\nAverage Time Between Order Placements: " + averageTimeBetweenOrderPlacements + "\nProportion of Order Cycles Without Stockouts: " + pOOCWS + "\nProportion of Unmet Demands" + pOUD;
+
+        return calculate();
+
     }
 }

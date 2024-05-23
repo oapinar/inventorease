@@ -7,10 +7,10 @@ import java.util.TreeMap;
 
 public class ZChartTableLookUp {
 
-    class ZEntry {
-        double z;
-        double fZ;
-        double lZ;
+    public class ZEntry {
+        public double z;
+        public double fZ;
+        public double lZ;
 
         public ZEntry(double z, double fZ, double lZ) {
             this.z = z;
@@ -21,7 +21,8 @@ public class ZChartTableLookUp {
     private TreeMap<Double, ZEntry> zMap = new TreeMap<>();
 
     public void initializeZTable() {
-        loadZTableFromFile("com/gnineieceng/model/zchart.csv");
+        //loadZTableFromFile("com/gnineieceng/model/zchart.csv");
+        loadZTableFromFile("C:\\Users\\clour\\OneDrive\\Desktop\\uni sources\\3 Prog\\New folder\\inventorease\\src\\main\\java\\com\\gnineieceng\\model\\zchart.csv");
     }
     private void loadZTableFromFile(String filePath) {
         try {
@@ -55,12 +56,28 @@ public class ZChartTableLookUp {
         }
     }
 
+    public ZEntry findClosestZFromFZ(double fZ) {
+        double z = -3;
+        double fz;
+        ZEntry zEnt;
+
+
+        do {
+            zEnt = findClosestZ(z);
+            fz = zEnt.fZ;
+            z += 0.03;
+        } while (fz < fZ && z <= 3);
+
+        return zEnt;
+    }
+
     public static void main(String[] args) {
         ZChartTableLookUp test = new ZChartTableLookUp();
         test.initializeZTable();
         Scanner myObj = new Scanner(System.in);
-        System.out.println("Enter z value: ");
+        System.out.println("Enter fz value: ");
         Double z = myObj.nextDouble();
-        System.out.println("Z:    " + test.findClosestZ(z).z + "\nF(Z): " + test.findClosestZ(z).fZ + "\nL(Z): " + test.findClosestZ(z).lZ);
+        ZEntry ent = test.findClosestZFromFZ(z);
+        System.out.println("Z:    " + ent.z + "\nF(Z): " + ent.fZ + "\nL(Z): " + ent.lZ);
     }
 }
