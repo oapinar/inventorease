@@ -37,19 +37,8 @@ public class InventorEaseController {
         // Create an inventory object
         InventorEaseModel inventory = new InventorEaseModel(unitCost, orderingCost, penaltyCost, interestRate, leadTime, leadTimeDemand, leadTimeStandardDeviation);
 
-        // Calculations
-        inventory.calculateHoldingCost();
-        inventory.calculateAnnualDemand();
-        inventory.calculateOptimalLotSize();
-        inventory.calculateReorderPoint();
-        inventory.calculateNumberOfIterationsToFindOptimals();
-        inventory.calculateSafetyStock();
-        inventory.calculateAverageAnnualHoldingCost();
-        inventory.calculateAverageSetupCost();
-        inventory.calculateAveragePenaltyCost();
-        inventory.calculateAverageTimeBetweenOrderPlacements();
-        inventory.calculatePOOCWS();
-        inventory.calculatePOUD();
+        // Perform the calculations based on the provided pseudo code
+        inventory.calculate();
 
         // Update the UI with the results
         outputArea.setText(inventory.outcomesToString());
@@ -61,3 +50,4 @@ public class InventorEaseController {
         // For example, setting default values or configurations
     }
 }
+

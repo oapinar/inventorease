@@ -21,8 +21,7 @@ public class ZChartTableLookUp {
     private TreeMap<Double, ZEntry> zMap = new TreeMap<>();
 
     public void initializeZTable() {
-        //loadZTableFromFile("com/gnineieceng/model/zchart.csv");
-        loadZTableFromFile("C:\\Users\\clour\\OneDrive\\Desktop\\uni sources\\3 Prog\\New folder\\inventorease\\src\\main\\java\\com\\gnineieceng\\model\\zchart.csv");
+        loadZTableFromFile("src/main/resources/com/gnineieceng/view/zchart.csv");
     }
     private void loadZTableFromFile(String filePath) {
         try {
